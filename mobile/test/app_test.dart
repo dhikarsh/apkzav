@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ppob_app/format.dart';
 import 'package:ppob_app/printer.dart';
+import 'package:ppob_app/screens/products_screen.dart';
 
 void main() {
   test('format rupiah', () {
@@ -20,5 +21,12 @@ void main() {
     });
     expect(receipt.asText(), contains('SN: SN123'));
     expect(receipt.asText(), contains('Tujuan: 087800001234'));
+  });
+
+  test('operator dari awalan nomor', () {
+    expect(operatorFromNumber('0812 3456 789'), 'TELKOMSEL');
+    expect(operatorFromNumber('+6287812345678'), 'XL');
+    expect(operatorFromNumber('0857'), 'INDOSAT');
+    expect(operatorFromNumber('021'), isNull);
   });
 }

@@ -54,15 +54,17 @@ class _DepositScreenState extends State<DepositScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Tiket deposit'),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Text('Transfer TEPAT sejumlah (termasuk 3 digit terakhir):'),
-          const SizedBox(height: 8),
-          Text(rupiah(d['total']), style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 8),
-          InfoRow('Ke rekening', d['bank_info'] ?? '-'),
-          const Text('Saldo bertambah setelah admin mengonfirmasi.',
-              style: TextStyle(fontSize: 12)),
-        ]),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Transfer TEPAT sejumlah (termasuk 3 digit terakhir):'),
+            const SizedBox(height: 8),
+            Text(rupiah(d['total']), style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 8),
+            InfoRow('Ke rekening', d['bank_info'] ?? '-'),
+            const Text('Saldo bertambah setelah admin mengonfirmasi.', style: TextStyle(fontSize: 12)),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Clipboard.setData(ClipboardData(text: '${d['total']}')),

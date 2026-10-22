@@ -29,12 +29,8 @@ class Receipt {
     );
   }
 
-  String asText() => [
-        'STRUK PEMBELIAN',
-        time,
-        for (final (label, value) in lines) '$label: $value',
-        'Ref: $refId',
-      ].join('\n');
+  String asText() =>
+      ['STRUK PEMBELIAN', time, for (final (label, value) in lines) '$label: $value', 'Ref: $refId'].join('\n');
 }
 
 /// Printer thermal Bluetooth 58mm (ESC/POS). Printer harus sudah di-pair di pengaturan Bluetooth HP.
@@ -42,10 +38,8 @@ class Printer {
   static const _storage = FlutterSecureStorage();
 
   static Future<String?> get savedAddress => _storage.read(key: 'printer_mac');
-  static Future<String> get header async =>
-      await _storage.read(key: 'receipt_header') ?? 'BHOBU RELOAD';
-  static Future<String> get footer async =>
-      await _storage.read(key: 'receipt_footer') ?? 'Terima kasih';
+  static Future<String> get header async => await _storage.read(key: 'receipt_header') ?? 'ZPP RELOAD';
+  static Future<String> get footer async => await _storage.read(key: 'receipt_footer') ?? 'Terima kasih';
 
   static Future<void> saveSettings({String? address, String? header, String? footer}) async {
     if (address != null) await _storage.write(key: 'printer_mac', value: address);
@@ -74,14 +68,20 @@ class Printer {
     final gen = Generator(PaperSize.mm58, await CapabilityProfile.load());
     final bytes = <int>[
       ...gen.reset(),
-      ...gen.text(await header,
-          styles: const PosStyles(align: PosAlign.center, bold: true, height: PosTextSize.size2)),
+      ...gen.text(
+        await header,
+        styles: const PosStyles(align: PosAlign.center, bold: true, height: PosTextSize.size2),
+      ),
       ...gen.text(receipt.time, styles: const PosStyles(align: PosAlign.center)),
       ...gen.hr(),
       for (final (label, value) in receipt.lines)
         ...gen.row([
           PosColumn(text: label, width: 4),
-          PosColumn(text: value, width: 8, styles: const PosStyles(align: PosAlign.right)),
+          PosColumn(
+            text: value,
+            width: 8,
+            styles: const PosStyles(align: PosAlign.right),
+          ),
         ]),
       ...gen.hr(),
       ...gen.text('Ref ${receipt.refId}', styles: const PosStyles(align: PosAlign.center)),

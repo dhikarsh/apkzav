@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/home_screen.dart';
+import 'brand_logo.dart';
 import 'screens/login_screen.dart';
+import 'screens/main_shell.dart';
 import 'session.dart';
+import 'theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,16 +22,37 @@ class PpobApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bhobu Reload',
+      title: 'ZPP Reload',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: const Color(0xFF1565C0), useMaterial3: true),
+      theme: buildTheme(),
       home: Consumer<Session>(
         builder: (context, session, _) {
-          if (session.loading) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-          return session.loggedIn ? const HomeScreen() : const LoginScreen();
+          if (session.loading) return const _Splash();
+          return session.loggedIn ? const MainShell() : const LoginScreen();
         },
+      ),
+    );
+  }
+}
+
+class _Splash extends StatelessWidget {
+  const _Splash();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: Brand.headerGradient),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Mascot(pose: 'mascot_wave', height: 200),
+              SizedBox(height: 24),
+              BrandLogo(size: 48),
+            ],
+          ),
+        ),
       ),
     );
   }

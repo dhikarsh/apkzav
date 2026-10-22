@@ -23,14 +23,11 @@ class Api {
   /// Dipanggil saat token ditolak server (login di HP lain / logout dari admin).
   void Function()? onUnauthorized;
 
-  Future<dynamic> get(String path, [Map<String, String>? query]) =>
-      _send('GET', path, query: query);
+  Future<dynamic> get(String path, [Map<String, String>? query]) => _send('GET', path, query: query);
 
-  Future<dynamic> post(String path, [Map<String, dynamic>? body]) =>
-      _send('POST', path, body: body);
+  Future<dynamic> post(String path, [Map<String, dynamic>? body]) => _send('POST', path, body: body);
 
-  Future<dynamic> _send(String method, String path,
-      {Map<String, String>? query, Map<String, dynamic>? body}) async {
+  Future<dynamic> _send(String method, String path, {Map<String, String>? query, Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$apiUrl/api/v1$path').replace(queryParameters: query);
     final request = http.Request(method, uri)
       ..headers.addAll({
@@ -42,8 +39,7 @@ class Api {
 
     final http.Response res;
     try {
-      res = await http.Response.fromStream(
-          await _client.send(request).timeout(const Duration(seconds: 40)));
+      res = await http.Response.fromStream(await _client.send(request).timeout(const Duration(seconds: 40)));
     } catch (_) {
       throw ApiException('Gagal terhubung ke server. Periksa koneksi internet.');
     }

@@ -13,14 +13,12 @@ Future<String?> askPin(BuildContext context, {String title = 'Masukkan PIN'}) {
         obscureText: true,
         keyboardType: TextInputType.number,
         maxLength: 6,
-        decoration: const InputDecoration(hintText: '6 angka'),
+        decoration: const InputDecoration(hintText: '6 angka', counterText: ''),
         onSubmitted: (v) => Navigator.pop(context, v),
       ),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-        FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: const Text('Lanjut')),
+        FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: const Text('Lanjut')),
       ],
     ),
   );
@@ -39,10 +37,12 @@ class InfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 120, child: Text(label, style: const TextStyle(color: Colors.black54))),
+          SizedBox(
+            width: 120,
+            child: Text(label, style: const TextStyle(color: Colors.black54)),
+          ),
           Expanded(
-            child: SelectableText(value,
-                style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+            child: SelectableText(value, style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
           ),
         ],
       ),

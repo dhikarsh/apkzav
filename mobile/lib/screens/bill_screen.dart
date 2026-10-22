@@ -70,8 +70,7 @@ class _BillScreenState extends State<BillScreen> {
     try {
       final res = await context.read<Session>().api.post('/bills/${_bill!['ref_id']}/pay', {'pin': pin});
       if (!mounted) return;
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => TransactionScreen(initial: res['data'])));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TransactionScreen(initial: res['data'])));
     } catch (e) {
       if (mounted) showError(context, e);
     } finally {
@@ -91,10 +90,7 @@ class _BillScreenState extends State<BillScreen> {
             initialValue: _sku,
             isExpanded: true,
             decoration: const InputDecoration(labelText: 'Layanan'),
-            items: [
-              for (final p in _products)
-                DropdownMenuItem(value: p['sku'] as String, child: Text(p['name'])),
-            ],
+            items: [for (final p in _products) DropdownMenuItem(value: p['sku'] as String, child: Text(p['name']))],
             onChanged: (v) => setState(() {
               _sku = v;
               _bill = null;
@@ -106,21 +102,20 @@ class _BillScreenState extends State<BillScreen> {
             decoration: const InputDecoration(labelText: 'ID pelanggan / nomor'),
           ),
           const SizedBox(height: 16),
-          FilledButton.tonal(
-            onPressed: _busy ? null : _inquiry,
-            child: const Text('Cek tagihan'),
-          ),
+          FilledButton.tonal(onPressed: _busy ? null : _inquiry, child: const Text('Cek tagihan')),
           if (bill != null) ...[
             const SizedBox(height: 16),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Column(children: [
-                  InfoRow('Layanan', bill['product']),
-                  InfoRow('ID pelanggan', bill['customer_no']),
-                  InfoRow('Nama', bill['customer_name'] ?? '-'),
-                  InfoRow('Total bayar', rupiah(bill['price']), bold: true),
-                ]),
+                child: Column(
+                  children: [
+                    InfoRow('Layanan', bill['product']),
+                    InfoRow('ID pelanggan', bill['customer_no']),
+                    InfoRow('Nama', bill['customer_name'] ?? '-'),
+                    InfoRow('Total bayar', rupiah(bill['price']), bold: true),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 8),

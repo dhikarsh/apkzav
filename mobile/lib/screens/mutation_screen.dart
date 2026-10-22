@@ -51,8 +51,7 @@ class _MutationScreenState extends State<MutationScreen> {
                     subtitle: Text('${dateTime(m['created_at'])} · saldo ${rupiah(m['balance_after'])}'),
                     trailing: Text(
                       '${amount > 0 ? '+' : '-'}${rupiah(amount.abs())}',
-                      style: TextStyle(
-                          color: amount > 0 ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: amount > 0 ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
                     ),
                   );
                 },

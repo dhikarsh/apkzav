@@ -6,8 +6,8 @@ import 'api.dart';
 /// Status login dan data member yang sedang aktif.
 class Session extends ChangeNotifier {
   Session({Api? api, FlutterSecureStorage? storage})
-      : api = api ?? Api(),
-        _storage = storage ?? const FlutterSecureStorage() {
+    : api = api ?? Api(),
+      _storage = storage ?? const FlutterSecureStorage() {
     this.api.onUnauthorized = _clear;
   }
 
@@ -34,8 +34,7 @@ class Session extends ChangeNotifier {
   }
 
   Future<void> login(String phone, String pin) async {
-    final res = await api.post('/auth/login',
-        {'phone': phone, 'pin': pin, 'device_name': 'android'});
+    final res = await api.post('/auth/login', {'phone': phone, 'pin': pin, 'device_name': 'android'});
     await _save(res);
   }
 

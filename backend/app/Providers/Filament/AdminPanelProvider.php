@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('Panel PPOB')
+            ->brandName('ZPP Reload Admin')
             ->colors([
                 'primary' => Color::Blue,
             ])

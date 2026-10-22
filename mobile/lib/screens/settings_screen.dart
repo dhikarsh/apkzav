@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../format.dart';
 import '../printer.dart';
 import '../session.dart';
+import '../theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -65,16 +66,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Ganti PIN'),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          for (final (c, label) in [(old, 'PIN lama'), (fresh, 'PIN baru'), (again, 'Ulangi PIN baru')])
-            TextField(
-              controller: c,
-              obscureText: true,
-              maxLength: 6,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: label),
-            ),
-        ]),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (c, label) in [(old, 'PIN lama'), (fresh, 'PIN baru'), (again, 'Ulangi PIN baru')])
+              TextField(
+                controller: c,
+                obscureText: true,
+                maxLength: 6,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: label),
+              ),
+          ],
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
           FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Simpan')),
@@ -94,22 +98,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _profileCard(BuildContext context) {
+    final user = context.watch<Session>().user ?? const {};
+    final name = (user['name'] ?? '') as String;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(gradient: Brand.headerGradient, borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Colors.white,
+            child: Text(
+              name.isEmpty ? '?' : name[0].toUpperCase(),
+              style: const TextStyle(color: Brand.primary, fontSize: 22, fontWeight: FontWeight.w800),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700),
+                ),
+                Text('${user['phone'] ?? ''}', style: const TextStyle(color: Colors.white70)),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  decoration: BoxDecoration(gradient: Brand.accentGradient, borderRadius: BorderRadius.circular(20)),
+                  child: Text(
+                    '${user['level'] ?? 'Member'}',
+                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pengaturan')),
+      appBar: AppBar(title: const Text('Akun Saya')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _profileCard(context),
+          const SizedBox(height: 20),
+          const Text('Pengaturan struk', style: TextStyle(fontWeight: FontWeight.w700)),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.print),
+            leading: const Icon(Icons.print_outlined),
             title: const Text('Printer struk'),
             subtitle: Text(_printer ?? 'Belum dipilih'),
             onTap: _pickPrinter,
           ),
-          TextField(controller: _header, decoration: const InputDecoration(labelText: 'Judul struk')),
-          TextField(controller: _footer, decoration: const InputDecoration(labelText: 'Catatan bawah struk')),
+          TextField(
+            controller: _header,
+            decoration: const InputDecoration(labelText: 'Judul struk'),
+          ),
+          TextField(
+            controller: _footer,
+            decoration: const InputDecoration(labelText: 'Catatan bawah struk'),
+          ),
           const SizedBox(height: 8),
           OutlinedButton(
             onPressed: () async {
