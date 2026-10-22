@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../api.dart';
 import '../brand_logo.dart';
 import '../format.dart';
 import '../session.dart';
@@ -103,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             const BrandLogo(size: 34),
                             const Spacer(),
+                            if (demoMode) const DemoBadge(),
                             IconButton(
                               onPressed: () => _open(const MutationScreen()),
                               icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),

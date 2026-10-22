@@ -2,8 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'demo.dart';
+
 /// Alamat backend. Set saat build: flutter build apk --dart-define=API_URL=https://api.domainanda.com
 const apiUrl = String.fromEnvironment('API_URL', defaultValue: 'http://10.0.2.2:8000');
+
+/// Mode demo memakai server tiruan di dalam aplikasi. Aktif bila API_URL dikosongkan saat build
+/// (belum ada server) atau dipaksa dengan --dart-define=DEMO=true.
+const demoMode = bool.fromEnvironment('DEMO') || apiUrl == '';
 
 class ApiException implements Exception {
   ApiException(this.message, [this.status]);
@@ -15,7 +21,7 @@ class ApiException implements Exception {
 }
 
 class Api {
-  Api({http.Client? client}) : _client = client ?? http.Client();
+  Api({http.Client? client}) : _client = client ?? (demoMode ? DemoBackend().client : http.Client());
 
   final http.Client _client;
   String? token;
@@ -28,7 +34,8 @@ class Api {
   Future<dynamic> post(String path, [Map<String, dynamic>? body]) => _send('POST', path, body: body);
 
   Future<dynamic> _send(String method, String path, {Map<String, String>? query, Map<String, dynamic>? body}) async {
-    final uri = Uri.parse('$apiUrl/api/v1$path').replace(queryParameters: query);
+    final uri = Uri.parse('${demoMode ? 'https://demo.zppreload.local' : apiUrl}/api/v1$path')
+        .replace(queryParameters: query);
     final request = http.Request(method, uri)
       ..headers.addAll({
         'Accept': 'application/json',

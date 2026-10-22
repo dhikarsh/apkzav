@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../api.dart';
 import '../brand_logo.dart';
 import '../format.dart';
 import '../session.dart';
@@ -21,6 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _register = false;
   bool _busy = false;
   bool _showPin = false;
+
+  void _tryDemo() {
+    _phone.text = '081234567890';
+    _pin.text = '123456';
+    _submit();
+  }
 
   Future<void> _submit() async {
     setState(() => _busy = true);
@@ -47,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
             children: [
-              const BrandLogo(size: 44),
+              const Row(children: [BrandLogo(size: 44), Spacer(), if (demoMode) DemoBadge()]),
               const SizedBox(height: 8),
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -148,6 +155,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           : Text(_register ? 'Daftar' : 'Masuk'),
                     ),
+                    if (demoMode && !_register) ...[
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: _busy ? null : _tryDemo,
+                        icon: const Icon(Icons.play_circle_outline_rounded),
+                        label: const Text('Coba langsung (akun demo)'),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Mode demo memakai data contoh dan saldo Rp 1.000.000. Tidak ada transaksi sungguhan. '
+                        'PIN transaksi: 123456.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Brand.muted, fontSize: 12),
+                      ),
+                    ],
                   ],
                 ),
               ),

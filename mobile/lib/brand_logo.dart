@@ -61,3 +61,18 @@ class Mascot extends StatelessWidget {
   Widget build(BuildContext context) =>
       Image.asset('assets/$pose.png', height: height, fit: BoxFit.contain, filterQuality: FilterQuality.medium);
 }
+
+/// Penanda kecil bahwa aplikasi berjalan dengan data contoh (tanpa server).
+class DemoBadge extends StatelessWidget {
+  const DemoBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    decoration: BoxDecoration(gradient: Brand.accentGradient, borderRadius: BorderRadius.circular(20)),
+    child: const Text(
+      'MODE DEMO',
+      style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.6),
+    ),
+  );
+}

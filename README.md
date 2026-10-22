@@ -78,6 +78,8 @@ flutter run --dart-define=API_URL=http://10.0.2.2:8000          # emulator ke ba
 flutter build apk --release --dart-define=API_URL=https://api.domain-anda.com
 ```
 
+Tanpa `API_URL` (dikosongkan), aplikasi berjalan dalam **mode demo**: server tiruan di dalam aplikasi dengan data contoh, saldo Rp 1.000.000, PIN 123456, deposit otomatis terkonfirmasi setelah 10 detik, dan nomor tujuan berakhiran `0000` sengaja gagal untuk mencoba refund. Begitu variabel repo `API_URL` diisi, build berikutnya otomatis tersambung ke server.
+
 Build rilis wajib memakai `https`. GitHub Actions (`.github/workflows/ci.yml`) otomatis menjalankan tes dan membuat APK; unduh dari tab Actions > run terbaru > Artifacts. Isi variabel repo `API_URL` dengan alamat backend Anda.
 
 Sebelum rilis ke Play Store: buat keystore untuk tanda tangan rilis, dan sesuaikan `applicationId` di `mobile/android/app/build.gradle.kts`.
