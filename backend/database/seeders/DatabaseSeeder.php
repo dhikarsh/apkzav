@@ -14,7 +14,11 @@ class DatabaseSeeder extends Seeder
         Level::firstOrCreate(['name' => 'Reseller'], ['markup' => 750]);
         Level::firstOrCreate(['name' => 'Agen'], ['markup' => 300]);
 
-        // Ganti email, HP, password & PIN admin setelah login pertama.
+        // Admin contoh hanya untuk pengembangan; di server buat admin dengan `php artisan ppob:make-admin`.
+        if (! app()->environment('local')) {
+            return;
+        }
+
         User::firstOrCreate(['phone' => '080000000000'], [
             'name' => 'Admin',
             'email' => 'admin@example.com',

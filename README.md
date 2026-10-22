@@ -56,6 +56,17 @@ Harga jual = harga modal Digiflazz + markup. Markup diatur per **level harga** (
 cd backend && php artisan test
 ```
 
+## Pasang di server (VPS)
+
+Butuh VPS Ubuntu 22.04/24.04 (minimal 2 GB RAM) dengan IP tetap, dan subdomain (mis. `api.zppreload.com`) yang record A-nya sudah mengarah ke IP VPS.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/dhikarsh/apkzav/main/deploy/install.sh -o install.sh
+sudo bash install.sh
+```
+
+Skrip memasang nginx, PHP 8.3, MariaDB, Redis, worker antrean (supervisor), jadwal per menit (cron), firewall, dan HTTPS (Let's Encrypt), lalu membuat akun admin. Di akhir ia menampilkan password admin, IP untuk whitelist Digiflazz, serta URL dan secret webhook. Untuk versi baru: `sudo bash /var/www/zpp/deploy/update.sh`.
+
 ## Aplikasi Android
 
 Butuh Flutter stable terbaru (dibuat dengan 3.47) dan Android SDK.
@@ -69,7 +80,7 @@ flutter build apk --release --dart-define=API_URL=https://api.domain-anda.com
 
 Build rilis wajib memakai `https`. GitHub Actions (`.github/workflows/ci.yml`) otomatis menjalankan tes dan membuat APK; unduh dari tab Actions > run terbaru > Artifacts. Isi variabel repo `API_URL` dengan alamat backend Anda.
 
-Sebelum rilis ke Play Store: ganti ikon, buat keystore untuk tanda tangan rilis, dan sesuaikan `applicationId` di `mobile/android/app/build.gradle.kts`.
+Sebelum rilis ke Play Store: buat keystore untuk tanda tangan rilis, dan sesuaikan `applicationId` di `mobile/android/app/build.gradle.kts`.
 
 ## Arah pengembangan berikutnya
 

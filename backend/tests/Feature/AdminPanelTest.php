@@ -39,4 +39,13 @@ class AdminPanelTest extends TestCase
 
         $this->get('/admin')->assertForbidden();
     }
+
+    public function test_make_admin_command_creates_panel_user(): void
+    {
+        $this->artisan('ppob:make-admin', ['email' => 'owner@zpp.test', '--password' => 'rahasia123'])->assertSuccessful();
+
+        $admin = User::where('email', 'owner@zpp.test')->first();
+        $this->assertTrue($admin->isAdmin());
+        $this->assertTrue(auth()->attempt(['email' => 'owner@zpp.test', 'password' => 'rahasia123']));
+    }
 }
