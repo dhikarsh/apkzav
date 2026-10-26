@@ -31,7 +31,7 @@ class TodayStats extends StatsOverviewWidget
                     .(clone $today)->where('status', Transaction::FAILED)->count().' gagal'),
             Stat::make('Omzet hari ini', $rp((int) $success->sum('price'))),
             Stat::make('Laba kotor hari ini', $rp((int) $success->get()->sum(fn ($t) => $t->price - $t->cost))),
-            Stat::make('Saldo Digiflazz', $supplierBalance)
+            Stat::make('Saldo supplier', $supplierBalance)
                 ->description(Deposit::where('status', 'pending')->count().' tiket deposit menunggu'),
         ];
     }

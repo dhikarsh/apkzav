@@ -47,4 +47,6 @@ Artisan::command('ppob:make-admin {email} {--password=} {--phone=080000000000} {
 })->purpose('Buat atau perbarui akun admin panel');
 
 Schedule::command('ppob:check-pending')->everyMinute()->withoutOverlapping();
-Schedule::command('ppob:sync-products')->hourly()->withoutOverlapping();
+// OtomaX tidak punya daftar harga lewat IP Center; produknya diisi manual di panel admin.
+Schedule::command('ppob:sync-products')->hourly()->withoutOverlapping()
+    ->when(fn () => config('services.supplier') !== 'otomax');
