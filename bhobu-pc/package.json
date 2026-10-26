@@ -1,0 +1,43 @@
+{
+  "name": "bhobu-reload-pc",
+  "productName": "BHOBU RELOAD",
+  "version": "1.0.0",
+  "description": "Aplikasi PC BHOBU RELOAD (membuka bhobureload.otoreport.com dengan tampilan modern)",
+  "author": "BHOBU RELOAD",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check src/main.js && node --check src/toolbar-preload.js && node --check src/toolbar.js && node --check src/error.js",
+    "dist": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "39.8.10",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "id.bhobureload.pc",
+    "productName": "BHOBU RELOAD",
+    "artifactName": "BHOBU-RELOAD-${version}-${arch}-${name}.${ext}",
+    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "directories": { "buildResources": "build", "output": "dist" },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "BHOBU RELOAD",
+      "artifactName": "BHOBU-RELOAD-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "BHOBU-RELOAD-Portable-${version}.${ext}"
+    }
+  }
+}

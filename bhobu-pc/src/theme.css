@@ -1,0 +1,161 @@
+/* Tema modern BHOBU RELOAD, disuntikkan ke halaman web OtoReport.
+   Hanya mengubah tampilan (warna, sudut, bayangan, huruf); tidak mengubah isi atau alur transaksi.
+   Bisa dimatikan dari tombol "Tema" di aplikasi. */
+
+:root {
+  --bh-navy: #0a2a6e;
+  --bh-blue: #1e6fe8;
+  --bh-blue-dark: #0a49c2;
+  --bh-orange: #ff9a1f;
+  --bh-green: #22c55e;
+  --bh-bg: #eef3fb;
+  --bh-text: #1b2a44;
+  --bh-muted: #6b7a93;
+  --bh-line: #dfe7f3;
+  --bh-radius: 16px;
+  --bh-shadow: 0 10px 30px rgba(10, 42, 110, .10);
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(900px 320px at 50% 0, rgba(30, 111, 232, .9), transparent 70%),
+    linear-gradient(180deg, var(--bh-navy) 0, #123c96 220px, var(--bh-bg) 220px) !important;
+  background-color: var(--bh-bg) !important;
+}
+
+body {
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif !important;
+  color: var(--bh-text);
+  background: transparent !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kartu / panel / kotak putih */
+.card, .panel, .box, .well, .modal-content, .jumbotron, .list-group,
+[class*="w3-card"], .w3-white, .w3-panel, .collection, .card-panel {
+  border-radius: var(--bh-radius) !important;
+  border: 1px solid rgba(223, 231, 243, .8) !important;
+  box-shadow: var(--bh-shadow) !important;
+  overflow: hidden;
+}
+.card-header, .panel-heading, .modal-header {
+  background: linear-gradient(135deg, #f5f9ff, #eaf2ff) !important;
+  border-bottom: 1px solid var(--bh-line) !important;
+  font-weight: 600;
+  color: var(--bh-navy) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--bh-navy);
+  font-weight: 700 !important;
+  letter-spacing: .2px;
+}
+
+a { color: var(--bh-blue); }
+a:hover { color: var(--bh-blue-dark); }
+
+/* Tombol: warna asli tetap dipakai (hijau tetap hijau), hanya dibuat modern */
+button, .btn, input[type="submit"], input[type="button"], input[type="reset"], [class*="w3-button"], [class*="w3-btn"] {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: .3px;
+  border: 0;
+  box-shadow: 0 6px 16px rgba(10, 42, 110, .16);
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease !important;
+  cursor: pointer;
+}
+button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover,
+[class*="w3-button"]:hover, [class*="w3-btn"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 10px 22px rgba(10, 42, 110, .22);
+}
+button:active, .btn:active, input[type="submit"]:active { transform: translateY(0) scale(.98); }
+
+/* Tombol utama (kirim/submit) diberi gradasi biru khas BHOBU */
+button[type="submit"], input[type="submit"], .btn-primary, .w3-blue, .w3-indigo {
+  background: linear-gradient(135deg, var(--bh-blue), var(--bh-blue-dark)) !important;
+  color: #fff !important;
+}
+.btn-success, .w3-green {
+  background: linear-gradient(135deg, #2bd36a, #16a34a) !important;
+  color: #fff !important;
+}
+.btn-warning, .w3-orange, .w3-amber {
+  background: linear-gradient(135deg, #ffb340, #ff8a00) !important;
+  color: #fff !important;
+}
+.btn-danger, .w3-red {
+  background: linear-gradient(135deg, #ff6b6b, #e5383b) !important;
+  color: #fff !important;
+}
+
+/* Isian */
+input[type="text"], input[type="password"], input[type="number"], input[type="tel"], input[type="email"],
+input[type="search"], input[type="date"], input:not([type]), select, textarea {
+  border-radius: 12px !important;
+  border: 1.5px solid var(--bh-line) !important;
+  background: #f8fbff !important;
+  padding: 10px 14px !important;
+  min-height: 42px;
+  box-sizing: border-box;
+  color: var(--bh-text) !important;
+  font-size: 15px !important;
+  box-shadow: none !important;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: var(--bh-blue) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(30, 111, 232, .15) !important;
+}
+::placeholder { color: #9aa7bd !important; }
+
+/* Tabel riwayat / mutasi */
+table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--bh-shadow);
+}
+th {
+  background: #eef4ff !important;
+  color: var(--bh-navy) !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid var(--bh-line) !important;
+}
+td { border-bottom: 1px solid #eef2f8 !important; }
+tbody tr:nth-child(even) td { background: #fafcff; }
+tbody tr:hover td { background: #eef5ff !important; }
+
+/* Menu / navbar */
+nav, .navbar, .w3-bar, .w3-top .w3-bar, header {
+  background: linear-gradient(100deg, #081f55, var(--bh-navy) 40%, #1450c4) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 20px rgba(10, 42, 110, .25) !important;
+}
+nav a, .navbar a, .w3-bar a, header a { color: #fff !important; }
+.w3-sidebar, .sidebar, .sidenav {
+  background: #fff !important;
+  box-shadow: 6px 0 24px rgba(10, 42, 110, .10) !important;
+}
+
+/* Label status */
+.badge, .label, .w3-tag, .chip {
+  border-radius: 999px !important;
+  padding: 3px 10px !important;
+  font-weight: 600;
+}
+
+/* Gambar produk / ikon menu sedikit membulat */
+img { border-radius: 10px; }
+
+/* Bilah gulir tipis */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #c5d3ea; border-radius: 10px; border: 2px solid var(--bh-bg); }
+::-webkit-scrollbar-thumb:hover { background: #9fb4d8; }
+::-webkit-scrollbar-track { background: transparent; }
