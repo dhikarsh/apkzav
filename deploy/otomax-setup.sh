@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# Sambungkan backend ZPP Reload ke OtomaX kantor lewat OpenVPN (MikroTik), lalu pakai OtomaX sebagai supplier.
-# Jalankan di VPS SETELAH deploy/install.sh selesai:
+# Pakai OtomaX sebagai supplier backend ZPP Reload. Jalankan di VPS SETELAH deploy/install.sh selesai:
 #
-#   1. Upload file .ovpn khusus VPS ke server, mis. /root/kantor.ovpn (jangan taruh di repo).
-#   2. sudo bash /var/www/zpp/deploy/otomax-setup.sh /root/kantor.ovpn
+#   sudo bash /var/www/zpp/deploy/otomax-setup.sh
+#
+# Bawaan: IP Center dipanggil lewat IP publik (http://103.139.244.165:5859), tanpa VPN.
+# Jika IP Center hanya bisa dijangkau lewat VPN kantor, berikan file .ovpn khusus VPS (jangan taruh di repo
+# dan jangan pakai akun VPN milik PC OtomaX):
+#
+#   sudo bash /var/www/zpp/deploy/otomax-setup.sh /root/kantor.ovpn
 #
 # Nilai bisa diberikan lewat variabel lingkungan agar tanpa pertanyaan:
 # VPN_USER, VPN_PASS, OTOMAX_URL, OTOMAX_MEMBER_ID, OTOMAX_PIN, OTOMAX_PASSWORD.
@@ -33,25 +37,30 @@ setenv() {
 
 [[ $EUID -eq 0 ]] || die "Jalankan sebagai root (sudo bash otomax-setup.sh /root/kantor.ovpn)."
 [[ -f "$BACKEND/.env" ]] || die "Backend belum terpasang. Jalankan deploy/install.sh dulu."
-[[ -n "$OVPN" && -f "$OVPN" ]] || die "Sebutkan file .ovpn, contoh: sudo bash otomax-setup.sh /root/kantor.ovpn"
+[[ -z "$OVPN" || -f "$OVPN" ]] || die "File $OVPN tidak ditemukan."
 
-ask VPN_USER "Username VPN (PPP secret di MikroTik)"
-ask VPN_PASS "Password VPN" secret
-OTOMAX_URL="${OTOMAX_URL:-http://10.244.165.1:5859}"
-ask OTOMAX_MEMBER_ID "Kode reseller ZPP di OtomaX (mis. ZPP001)"
+if [[ -n "$OVPN" ]]; then
+  ask VPN_USER "Username VPN khusus VPS (PPP secret di MikroTik)"
+  ask VPN_PASS "Password VPN" secret
+  OTOMAX_URL="${OTOMAX_URL:-http://10.244.165.1:5859}"
+else
+  OTOMAX_URL="${OTOMAX_URL:-http://103.139.244.165:5859}"
+fi
+ask OTOMAX_MEMBER_ID "Kode reseller ZPP di OtomaX (mis. ZPP0017)"
 ask OTOMAX_PIN "PIN reseller itu" secret
 ask OTOMAX_PASSWORD "Password H2H reseller itu" secret
 
-log "Memasang OpenVPN client"
-export DEBIAN_FRONTEND=noninteractive
-apt-get install -y openvpn
-install -d -m 700 "$VPN_DIR"
-printf '%s\n%s\n' "$VPN_USER" "$VPN_PASS" >"$VPN_DIR/$VPN_NAME.auth"
-chmod 600 "$VPN_DIR/$VPN_NAME.auth"
-{
-  # Baris auth-user-pass diarahkan ke file kredensial agar bisa jalan otomatis.
-  sed -e '/^auth-user-pass/d' "$OVPN"
-  cat <<CONF
+if [[ -n "$OVPN" ]]; then
+  log "Memasang OpenVPN client"
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get install -y openvpn
+  install -d -m 700 "$VPN_DIR"
+  printf '%s\n%s\n' "$VPN_USER" "$VPN_PASS" >"$VPN_DIR/$VPN_NAME.auth"
+  chmod 600 "$VPN_DIR/$VPN_NAME.auth"
+  {
+    # Baris auth-user-pass diarahkan ke file kredensial agar bisa jalan otomatis.
+    sed -e '/^auth-user-pass/d' "$OVPN"
+    cat <<CONF
 
 auth-user-pass $VPN_DIR/$VPN_NAME.auth
 # MikroTik tidak mendukung negosiasi cipher OpenVPN 2.6; pakai cipher dari profil.
@@ -60,20 +69,22 @@ data-ciphers-fallback AES-256-CBC
 # Hanya lalu lintas ke jaringan kantor yang lewat VPN; internet VPS tetap langsung.
 pull-filter ignore redirect-gateway
 CONF
-} >"$VPN_DIR/$VPN_NAME.conf"
-chmod 600 "$VPN_DIR/$VPN_NAME.conf"
-systemctl enable --now "openvpn-client@$VPN_NAME"
-systemctl restart "openvpn-client@$VPN_NAME"
+  } >"$VPN_DIR/$VPN_NAME.conf"
+  chmod 600 "$VPN_DIR/$VPN_NAME.conf"
+  systemctl enable --now "openvpn-client@$VPN_NAME"
+  systemctl restart "openvpn-client@$VPN_NAME"
+fi
 
-log "Menunggu VPN tersambung ke OtomaX ($OTOMAX_URL)"
+log "Mengecek koneksi ke OtomaX ($OTOMAX_URL)"
 ok=
 for _ in $(seq 1 20); do
   if curl -s -o /dev/null -m 5 "$OTOMAX_URL/"; then ok=1; break; fi
   sleep 3
 done
 if [[ -z "$ok" ]]; then
-  echo "OtomaX belum terjangkau. Cek: journalctl -u openvpn-client@$VPN_NAME -n 50"
-  echo "Pastikan IP Center aktif di OtomaX dan PC OtomaX tersambung ke VPN. Pengaturan tetap disimpan."
+  echo "OtomaX belum terjangkau di $OTOMAX_URL. Pastikan IP Center aktif dan PC OtomaX menyala."
+  [[ -n "$OVPN" ]] && echo "Cek VPN: journalctl -u openvpn-client@$VPN_NAME -n 50"
+  echo "Pengaturan tetap disimpan."
 fi
 
 log "Mengaktifkan OtomaX sebagai supplier"
@@ -101,6 +112,6 @@ cat <<DONE
  Produk diisi manual di panel admin ($APP_URL/admin):
    SKU = kode produk di OtomaX (mis. S10), harga modal = harga reseller ZPP di OtomaX.
 
- Status VPN : systemctl status openvpn-client@$VPN_NAME
+ Pastikan "Izinkan transaksi tanpa parameter [sign]" di OtomaX TIDAK dicentang.
 ============================================================
 DONE
