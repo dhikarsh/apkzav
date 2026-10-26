@@ -43,11 +43,11 @@ return [
         'testing' => env('DIGIFLAZZ_TESTING', true),
     ],
 
-    // Supplier aktif: "digiflazz" atau "otomax" (IP Center OtomaX sendiri, lewat VPN).
+    // Supplier aktif: "digiflazz" atau "otomax" (IP Center OtomaX sendiri).
     'supplier' => env('SUPPLIER', 'digiflazz'),
 
     'otomax' => [
-        // Alamat IP Center OtomaX, mis. http://10.244.165.1:5859 (lihat "Kirim Ke" di setting IP Center).
+        // Alamat IP Center OtomaX, mis. http://103.139.244.165:5859 (IP publik) atau IP VPN kantor.
         'base_url' => env('OTOMAX_URL'),
         'path' => env('OTOMAX_PATH', 'trx'),
         'member_id' => env('OTOMAX_MEMBER_ID'),

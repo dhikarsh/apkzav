@@ -1,0 +1,34 @@
+name: BHOBU RELOAD PC
+
+on:
+  push:
+    paths:
+      - 'bhobu-pc/**'
+      - '.github/workflows/bhobu-pc.yml'
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: bhobu-pc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: bhobu-pc/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      # Unduh dari halaman run ini, bagian Artifacts.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bhobu-reload-pc
+          path: |
+            bhobu-pc/dist/BHOBU-RELOAD-Setup-*.exe
+            bhobu-pc/dist/BHOBU-RELOAD-Portable-*.exe
