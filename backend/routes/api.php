@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BalanceController;
 use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\DigiflazzWebhookController;
+use App\Http\Controllers\Api\OtomaxWebhookController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::post('webhooks/digiflazz', DigiflazzWebhookController::class);
+    Route::match(['get', 'post'], 'webhooks/otomax/{token}', OtomaxWebhookController::class);
 
     Route::middleware(['auth:sanctum', 'throttle:120,1'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);

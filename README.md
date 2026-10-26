@@ -67,6 +67,21 @@ sudo bash install.sh
 
 Skrip memasang nginx, PHP 8.3, MariaDB, Redis, worker antrean (supervisor), jadwal per menit (cron), firewall, dan HTTPS (Let's Encrypt), lalu membuat akun admin. Di akhir ia menampilkan password admin, IP untuk whitelist Digiflazz, serta URL dan secret webhook. Untuk versi baru: `sudo bash /var/www/zpp/deploy/update.sh`.
 
+### Pakai OtomaX sendiri sebagai supplier
+
+Backend bisa bertransaksi ke OtomaX milik sendiri lewat modul **IP Center** (H2H HTTP), dengan VPS tersambung ke VPN kantor:
+
+1. Di OtomaX: aktifkan modul IP Center, lalu buat satu reseller khusus ZPP (mis. `ZPP001`) dengan akses IP/H2H.
+2. Di MikroTik: buat user VPN (PPP secret) khusus VPS, lalu ekspor profil `.ovpn`-nya. Jangan simpan file ini di repo.
+3. Upload `.ovpn` ke VPS, lalu jalankan `sudo bash /var/www/zpp/deploy/otomax-setup.sh /root/kantor.ovpn`.
+4. Isi **URL report** yang ditampilkan skrip ke data reseller ZPP di OtomaX.
+5. Isi produk di panel admin: SKU = kode produk OtomaX, harga modal = harga reseller ZPP di OtomaX. Daftar harga tidak disinkron otomatis.
+
+Request yang dikirim: `GET {OTOMAX_URL}/trx?product=&qty=1&dest=&refID=&memberID=&sign=`, dengan
+`sign = base64url(SHA1("OtomaX|memberID|product|dest|refID|pin|password"))`. Balasan OtomaX berupa teks; kata
+"SUKSES"/"GAGAL", SN, dan harga dibaca dengan pola yang bisa diubah lewat `OTOMAX_*_PATTERN` di `.env`.
+Untuk pascabayar, kode produk cek/bayar diatur lewat `OTOMAX_INQUIRY_PRODUCT` dan `OTOMAX_PAY_PRODUCT` (default `CEK{sku}` dan `BYR{sku}`).
+
 ## Aplikasi Android
 
 Butuh Flutter stable terbaru (dibuat dengan 3.47) dan Android SDK.
